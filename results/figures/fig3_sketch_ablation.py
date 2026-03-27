@@ -33,6 +33,7 @@ def make_figure(df, output_dir=None):
         set_output_dir(output_dir)
 
     fig, ax1 = plt.subplots()
+    fig.subplots_adjust(left=0.12, right=0.88, bottom=0.15, top=0.92)
     ax2 = ax1.twinx()
 
     depths = np.arange(6)
@@ -64,14 +65,14 @@ def make_figure(df, output_dir=None):
     ax1.text(
         0.55,
         0.28,
-        f"Optimal depth\\n+{gain:.1f}pp vs flat",
+        f"Optimal depth\n+{gain:.1f}pp vs flat",
         transform=ax1.transAxes,
         fontsize=8,
         bbox={"boxstyle": "round", "facecolor": "white", "edgecolor": "lightgrey"},
     )
 
     ax1.set_xticks(depths)
-    ax1.set_xticklabels(["0\\n(flat)", "1", "2", "3", "4", "5"])
+    ax1.set_xticklabels(["0\n(flat)", "1", "2", "3", "4", "5"])
     ax1.set_xlabel("Sketch depth limit")
     ax1.set_ylabel("Proof success rate (%)", color=PALETTE["hieroflow"])
     ax2.set_ylabel("Semantic diversity", color=PALETTE["rl_baseline"])

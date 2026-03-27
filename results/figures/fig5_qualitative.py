@@ -44,6 +44,7 @@ def make_figure(df, output_dir=None):
         set_output_dir(output_dir)
 
     fig, axes = plt.subplots(3, 1, sharex=True)
+    fig.subplots_adjust(left=0.22, right=0.97, top=0.93, bottom=0.10, hspace=0.20)
 
     for i, method in enumerate(METHODS):
         ax = axes[i]
