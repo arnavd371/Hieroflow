@@ -2,6 +2,25 @@
 
 HieroFlow is a hierarchical GFlowNet approach for Lean 4 theorem proving.
 
+## Project overview
+
+HieroFlow decomposes theorem proving into two coordinated decision layers:
+
+- a **sketch-level policy** (`hieroflow/sketch/`) that proposes high-level proof
+  structure; and
+- a **tactic-level policy** (`hieroflow/tactic/`) that fills each sketch step
+  with concrete Lean tactics.
+
+The repository includes:
+
+- **environments** for Lean proof interaction (`hieroflow/environment/`);
+- **training code** for hierarchical trajectory-balance style optimization
+  (`hieroflow/training/`);
+- **evaluation utilities** for benchmarking and diversity metrics
+  (`hieroflow/evaluation/`); and
+- a **results pipeline** (`results/`) that generates publication-ready figures,
+  tables, and statistical significance reports.
+
 ## Research results and visualization pipeline
 
 This repository includes a publication-oriented results pipeline under
@@ -61,3 +80,17 @@ Running `results.generate_all` currently produces:
 - `fig6_appendix.pdf/png`
 
 with table outputs printed to stdout and a significance summary dataframe report.
+
+### Example graphs
+
+#### Figure 1: Main benchmark success rates
+
+![Figure 1 main benchmark success rates](docs/images/fig1_main_result.png)
+
+#### Figure 2: Proof diversity metrics
+
+![Figure 2 proof diversity metrics](docs/images/fig2_diversity.png)
+
+#### Figure 3: Sketch-depth ablation
+
+![Figure 3 sketch-depth ablation](docs/images/fig3_sketch_ablation.png)
