@@ -34,12 +34,16 @@ _CALLS_PER_STEP = {
 }
 
 
+_HIEROFLOW_NOISE_SCALE = 0.015
+_BASELINE_NOISE_SCALE = 0.025
+
+
 def _learning_curve(rng: np.random.Generator, method: str) -> np.ndarray:
     """Return (NUM_SEEDS, len(STEPS)) array of success rates."""
     t = _TARGETS[method]
     curves = []
     for _ in range(NUM_SEEDS):
-        noise_scale = 0.015 if method == "hieroflow" else 0.025
+        noise_scale = _HIEROFLOW_NOISE_SCALE if method == "hieroflow" else _BASELINE_NOISE_SCALE
         base = t["init"] + (t["final"] - t["init"]) * (1 - np.exp(-t["speed"] * STEPS / 10_000))
         noise = rng.normal(0, noise_scale, size=len(STEPS))
         curves.append(np.clip(base + noise, 0.0, 1.0))

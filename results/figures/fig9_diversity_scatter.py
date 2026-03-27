@@ -31,7 +31,7 @@ def _per_seed_stats(df, method: str):
     return np.array(success_vals), np.array(div_vals)
 
 
-def _confidence_ellipse(ax, x, y, color, n_std=1.5):
+def _confidence_ellipse(ax, x, y, color, num_std_devs=1.5):
     """Draw a covariance ellipse around (x, y) data points."""
     if len(x) < 3:
         return
@@ -45,8 +45,8 @@ def _confidence_ellipse(ax, x, y, color, n_std=1.5):
     eigenvectors = eigenvectors[:, order]
     angle = np.degrees(np.arctan2(*eigenvectors[:, 0][::-1]))
     from matplotlib.patches import Ellipse
-    width = 2 * n_std * np.sqrt(max(eigenvalues[0], 0))
-    height = 2 * n_std * np.sqrt(max(eigenvalues[1], 0))
+    width = 2 * num_std_devs * np.sqrt(max(eigenvalues[0], 0))
+    height = 2 * num_std_devs * np.sqrt(max(eigenvalues[1], 0))
     ell = Ellipse(
         xy=(np.mean(x), np.mean(y)),
         width=width,

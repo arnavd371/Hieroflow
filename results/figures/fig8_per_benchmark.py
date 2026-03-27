@@ -66,7 +66,7 @@ def make_figure(df, output_dir=None):
             val = mat[i, j]
             half_ci = (ci_hi[i, j] - ci_lo[i, j]) / 2
             text = f"{val:.1f}\n±{half_ci:.1f}"
-            # Choose text colour based on background brightness
+            # Choose text color based on background brightness
             cell_norm = norm(val)
             text_color = "white" if cell_norm > 0.55 else "black"
             ax.text(j, i, text, ha="center", va="center", fontsize=7.5,
