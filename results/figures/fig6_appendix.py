@@ -24,6 +24,7 @@ def make_figure(df, output_dir=None):
 
     rng = np.random.default_rng(42)
     fig, axes = plt.subplots(2, 2)
+    fig.subplots_adjust(left=0.10, right=0.97, bottom=0.22, top=0.95, hspace=0.50, wspace=0.38)
     ax_a, ax_b, ax_c, ax_d = axes.flatten()
 
     steps = np.linspace(0, 50000, 200)
@@ -90,7 +91,7 @@ def make_figure(df, output_dir=None):
         ax.text(0.01, 0.99, label, transform=ax.transAxes, va="top", ha="left", fontweight="bold", fontsize=10)
 
     legend_handles = [Line2D([0], [0], color=PALETTE[m], lw=2, label=METHOD_LABELS[m]) for m in METHODS]
-    fig.legend(handles=legend_handles, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.02))
+    fig.legend(handles=legend_handles, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.01), fontsize=8)
 
     outputs = save_fig(fig, "fig6_appendix", double_col=True)
     plt.close(fig)

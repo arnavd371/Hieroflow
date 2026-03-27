@@ -49,6 +49,7 @@ def make_figure(df, output_dir=None):
         set_output_dir(output_dir)
 
     fig, ax = plt.subplots()
+    fig.subplots_adjust(left=0.12, right=0.97, bottom=0.15, top=0.97)
 
     curves = {}
     for method in METHODS:
@@ -74,7 +75,7 @@ def make_figure(df, output_dir=None):
     ax.set_ylim(0, 1)
 
     ax.axvline(847, linestyle="--", color="gray", linewidth=0.8)
-    ax.text(900, 0.18, "HieroFlow\\nmean budget", fontsize=8, color="gray")
+    ax.text(900, 0.18, "HieroFlow\nmean budget", fontsize=8, color="gray")
 
     rl_final = curves["rl_baseline"][0][-1]
     h_curve = curves["hieroflow"][0]
@@ -82,7 +83,7 @@ def make_figure(df, output_dir=None):
     x_match = CHECKPOINTS[idx]
     y_match = h_curve[idx]
     ax.annotate(
-        "Matches RL at\\n2.1× fewer calls",
+        "Matches RL at\n2.1× fewer calls",
         xy=(x_match, y_match),
         xytext=(400, min(0.95, y_match + 0.18)),
         arrowprops={"arrowstyle": "->", "linewidth": 0.8},

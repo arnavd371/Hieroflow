@@ -17,6 +17,9 @@ from results.figures.fig3_sketch_ablation import make_figure as make_fig3
 from results.figures.fig4_efficiency import make_figure as make_fig4
 from results.figures.fig5_qualitative import make_figure as make_fig5
 from results.figures.fig6_appendix import make_figure as make_fig6
+from results.figures.fig7_training_curves import make_figure as make_fig7
+from results.figures.fig8_per_benchmark import make_figure as make_fig8
+from results.figures.fig9_diversity_scatter import make_figure as make_fig9
 from results.tables.table1_main import generate_table1
 from results.tables.table2_ablation import generate_table2
 from results.tables.table3_diversity import generate_table3
@@ -45,7 +48,7 @@ def main() -> None:
         df = make_synthetic_data()
 
     saved_files = []
-    for fig_fn in [make_fig1, make_fig2, make_fig3, make_fig4, make_fig5, make_fig6]:
+    for fig_fn in [make_fig1, make_fig2, make_fig3, make_fig4, make_fig5, make_fig6, make_fig7, make_fig8, make_fig9]:
         saved_files.extend(fig_fn(df, output_dir=out_dir))
 
     generate_table1(df)
@@ -66,6 +69,9 @@ def main() -> None:
         "fig4_efficiency.pdf",
         "fig5_qualitative.pdf",
         "fig6_appendix.pdf",
+        "fig7_training_curves.pdf",
+        "fig8_per_benchmark.pdf",
+        "fig9_diversity_scatter.pdf",
     ]
     print()
     for item in checklist:

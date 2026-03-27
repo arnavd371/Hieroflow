@@ -34,6 +34,7 @@ def make_figure(df, output_dir=None):
         set_output_dir(output_dir)
 
     fig, axes = plt.subplots(1, 3, sharey=True)
+    fig.subplots_adjust(top=0.80, left=0.30, right=0.97, wspace=0.12)
 
     y = np.arange(len(ORDER), dtype=float)
     y_rev = y[::-1]
@@ -73,7 +74,7 @@ def make_figure(df, output_dir=None):
             ax.axvline(rl_reference[metric], linestyle="--", color=PALETTE["rl_baseline"], linewidth=0.8, alpha=0.8)
 
     legend_items = [Patch(facecolor=PALETTE[m], edgecolor="black", label=METHOD_LABELS[m]) for m in ORDER]
-    fig.legend(handles=legend_items, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.06))
+    fig.legend(handles=legend_items, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 0.98), fontsize=8)
 
     outputs = save_fig(fig, "fig2_diversity", double_col=False)
     plt.close(fig)
