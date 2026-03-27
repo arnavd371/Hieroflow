@@ -5,7 +5,7 @@ HieroFlow is a hierarchical GFlowNet approach for Lean 4 theorem proving.
 ## Research results and visualization pipeline
 
 This repository includes a publication-oriented results pipeline under
-`/home/runner/work/Hieroflow/Hieroflow/results` for generating NeurIPS-ready
+`results/` for generating NeurIPS-ready
 figures, tables, and significance reports.
 
 ### What is included
@@ -38,15 +38,15 @@ figures, tables, and significance reports.
 Run all artifacts using synthetic data:
 
 ```bash
-PYTHONPATH=/home/runner/work/Hieroflow/Hieroflow python -m results.generate_all
+PYTHONPATH=. python -m results.generate_all
 ```
 
 Or with real experiment logs:
 
 ```bash
-PYTHONPATH=/home/runner/work/Hieroflow/Hieroflow python -m results.generate_all \
+PYTHONPATH=. python -m results.generate_all \
   --log-dir /path/to/jsonl/logs \
-  --output-dir /home/runner/work/Hieroflow/Hieroflow/results/figures/output
+  --output-dir results/figures/output
 ```
 
 ### Current generated results (synthetic validation)

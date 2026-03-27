@@ -25,6 +25,6 @@ def relative_improvement(baseline: float, proposed: float, is_percentage_point: 
         delta_pp = (proposed - baseline) * 100.0
         return f"{delta_pp:+.1f}pp"
     if baseline == 0:
-        return "+∞%"
+        return "inf%"
     rel = (proposed - baseline) / baseline * 100.0
     return f"{rel:+.1f}%"

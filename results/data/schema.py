@@ -10,6 +10,12 @@ import pandas as pd
 METHODS = ["hieroflow", "rl_baseline", "gfn_flat", "supervised"]
 BENCHMARKS = ["leandojo_mathlib", "minif2f", "proofnet"]
 TACTICS = ["induction", "simp", "rw", "apply", "exact", "cases", "ring", "omega"]
+_LIST_APPEND_STRATEGIES = {
+    "hieroflow": 5,
+    "gfn_flat": 3,
+    "rl_baseline": 2,
+    "supervised": 2,
+}
 
 
 @dataclass
@@ -219,7 +225,10 @@ def make_synthetic_data(seed: int = 42) -> pd.DataFrame:
                     lean_calls = int(max(80, rng.normal(t["num_lean_calls"] * benchmark_factor[benchmark], t["num_lean_calls"] * 0.08)))
                     proof_length = int(rng.integers(4, 22)) if success else 0
                     tactics = _sample_tactics(rng, method, theorem) if success else []
-                    num_distinct = max(1, len(set(tuple(x for x in tactics if x) for _ in range(1)))) if success else 0
+                    if success:
+                        num_distinct = _LIST_APPEND_STRATEGIES[method] if theorem == "List.length_append" else 1
+                    else:
+                        num_distinct = 0
 
                     rows.append(
                         {

@@ -29,7 +29,7 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="results/figures/output/",
+        default="results/figures/output",
         help="Directory for figure outputs",
     )
     args = parser.parse_args()

@@ -57,10 +57,7 @@ def make_figure(df, output_dir=None):
                     ax.text(c, r, str(v), ha="center", va="center", fontsize=8)
 
         ax.set_yticks(np.arange(mat.shape[0]))
-        if i == 0:
-            ax.set_yticklabels(TACTICS[: mat.shape[0]], fontsize=9)
-        else:
-            ax.set_yticklabels([""] * mat.shape[0])
+        ax.set_yticklabels([f"Strategy {r+1}" for r in range(mat.shape[0])], fontsize=9)
 
         ax.text(-0.08, 0.5, METHOD_LABELS[method], transform=ax.transAxes, rotation=90, va="center", ha="right", fontweight="bold")
 
