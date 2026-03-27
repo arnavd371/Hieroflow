@@ -19,3 +19,5 @@ checkpoints/
 *.pt
 *.pth
 wandb/
+results/figures/output/*.pdf
+results/figures/output/*.png
