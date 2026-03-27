@@ -1,0 +1,230 @@
+# HieroFlow base configuration
+# All hyperparameters used across all modules.
+# Groups: model, sketch_gfn, tactic_gfn, training, replay_buffer,
+#         evaluation, environment, logging.
+#
+# Each parameter includes a comment with its role and typical ablation range.
+
+# ---------------------------------------------------------------------------
+# model — shared architecture settings
+# ---------------------------------------------------------------------------
+model:
+  # Shared hidden dimension used across encoder and GFlowNet heads.
+  # Typical range: 128–1024. Larger = more expressive but slower.
+  hidden_dim: 512
+
+  # Dimension of the ObligationEmbedder output.
+  # Must divide evenly into sketch_gfn.gnn_heads.
+  # Typical range: 64–256.
+  obligation_embed_dim: 128
+
+  # Vocabulary size for ObligationType one-hot (fixed: len(ObligationType) = 8).
+  obligation_vocab_size: 8
+
+# ---------------------------------------------------------------------------
+# sketch_gfn — outer GFlowNet (SketchFlow)
+# ---------------------------------------------------------------------------
+sketch_gfn:
+  # Hidden dimension for SketchFlow action MLP and SketchEncoder.
+  # Typical range: 256–1024.
+  hidden_dim: 512
+
+  # Number of abstract proof strategies (induction/contradiction/rewrite/
+  # case_split/direct). Changing this requires updating sketch_gfn.py.
+  num_strategies: 5
+
+  # Number of GATConv message-passing layers in SketchEncoder.
+  # Typical range: 2–6.
+  num_gnn_layers: 4
+
+  # Number of GAT attention heads per layer.
+  # Must divide hidden_dim evenly.
+  # Typical range: 1–8.
+  gnn_heads: 4
+
+  # Output dimension of the global graph embedding.
+  # Typical range: 256–1024.
+  encoder_output_dim: 512
+
+  # Initial sampling temperature for outer rollouts.
+  # Annealed toward 1.0 during training; start lower for more exploitation.
+  # Typical range: 0.5–2.0.
+  temperature_schedule:
+    start: 1.5
+    end: 1.0
+    anneal_steps: 50000
+
+# ---------------------------------------------------------------------------
+# tactic_gfn — inner GFlowNet (TacticFlow)
+# ---------------------------------------------------------------------------
+tactic_gfn:
+  # HuggingFace model name for the LLM backbone.
+  # Must be a code-focused model. Smaller = faster training.
+  # Options: deepseek-ai/deepseek-coder-1.3b-base, codellama/CodeLlama-7b-hf
+  lm_backbone_name: "deepseek-ai/deepseek-coder-1.3b-base"
+
+  # Hidden dimension for the conditioning adapter.
+  # Should match the LLM backbone's hidden_size for best compatibility.
+  # Typical range: 256–2048.
+  hidden_dim: 2048
+
+  # Maximum number of tokens in a generated tactic.
+  # Typical range: 32–256.
+  max_tactic_length: 128
+
+  # Initial sampling temperature for inner rollouts.
+  # Typical range: 0.5–1.5.
+  temperature_schedule:
+    start: 1.2
+    end: 0.8
+    anneal_steps: 100000
+
+  # Dimension of the ObligationEmbedder output (keys/values for cross-attn).
+  # Must match model.obligation_embed_dim.
+  obligation_embed_dim: 128
+
+  # Number of cross-attention heads in the conditioning adapter.
+  # Typical range: 4–16.
+  cross_attention_heads: 8
+
+# ---------------------------------------------------------------------------
+# training — joint training loop
+# ---------------------------------------------------------------------------
+training:
+  # Total number of training steps.
+  # Typical range: 100_000–1_000_000.
+  num_steps: 200000
+
+  # Number of inner (tactic) updates per outer (sketch) update.
+  # Higher = more inner updates per outer step. Typical range: 1–5.
+  outer_inner_ratio: 3
+
+  # Learning rate for SketchFlow Adam optimiser.
+  # Typical range: 1e-5–1e-3.
+  sketch_lr: 0.0001
+
+  # Learning rate for TacticFlow Adam optimiser.
+  # Typically lower than sketch_lr due to LLM backbone.
+  # Typical range: 1e-6–5e-5.
+  tactic_lr: 0.00002
+
+  # Gradient clipping norm for both GFlowNets.
+  # Typical range: 0.5–5.0.
+  grad_clip: 1.0
+
+  # λ for SubTB(λ) loss. 1.0 = full TB; 0.0 ≈ DB.
+  # Typical range: 0.7–1.0.
+  tb_lambda: 0.9
+
+  # Run evaluation every this many steps.
+  # Typical range: 100–2000.
+  eval_every: 500
+
+  # Save model checkpoints every this many steps.
+  # Typical range: 500–5000.
+  save_every: 1000
+
+  # Path to a JSON file containing the list of training theorem names.
+  theorems_path: "data/theorems_train.json"
+
+  # Directory to save checkpoints.
+  checkpoint_dir: "checkpoints"
+
+  # Curriculum ramp: steps to transition from easy-only to full theorem pool.
+  # Typical range: 5000–50_000.
+  curriculum_ramp_steps: 20000
+
+  # Fraction of easy theorems used at the start of training.
+  # Typical range: 0.3–0.9.
+  curriculum_easy_fraction: 0.7
+
+# ---------------------------------------------------------------------------
+# replay_buffer — prioritised experience replay
+# ---------------------------------------------------------------------------
+replay_buffer:
+  # Maximum number of trajectories stored across both levels.
+  # Typical range: 10_000–500_000.
+  max_size: 50000
+
+  # Priority exponent α. 0 = uniform; 1 = full prioritisation.
+  # Typical range: 0.4–0.8.
+  alpha: 0.6
+
+  # Initial importance-sampling exponent β.
+  # Annealed to 1.0 over beta_anneal_steps to remove bias.
+  # Typical range: 0.3–0.6.
+  beta: 0.4
+
+  # Steps over which β is annealed to 1.0.
+  # Typical range: 50_000–500_000.
+  beta_anneal_steps: 100000
+
+  # Sketch : tactic sampling ratio (1:N).
+  # Tactic trajectories are cheaper to generate, so over-sample.
+  # Typical range: 1:2 – 1:5.
+  sketch_tactic_sample_ratio: 3
+
+# ---------------------------------------------------------------------------
+# evaluation
+# ---------------------------------------------------------------------------
+evaluation:
+  # Number of diversity evaluation samples per benchmark theorem.
+  # Higher = more reliable metrics but slower. Typical range: 1–16.
+  num_samples_per_theorem: 4
+
+  # Embedding dimension for ProofEmbedder.
+  # Typical range: 128–512.
+  proof_embedding_dim: 256
+
+  # Maximum theorems to evaluate per benchmark during quick evaluations.
+  # Set to null to evaluate the full benchmark.
+  max_eval_theorems: 100
+
+  # K-means clusters for strategy_cluster_count.
+  # Typical range: 3–10.
+  n_strategy_clusters: 5
+
+# ---------------------------------------------------------------------------
+# environment — Lean 4 interaction
+# ---------------------------------------------------------------------------
+environment:
+  # Wall-clock timeout per tactic call (seconds).
+  # Typical range: 5–60.
+  lean_timeout_seconds: 30
+
+  # Maximum number of tactics in a single proof attempt.
+  # Typical range: 10–100.
+  max_tactic_depth: 32
+
+  # Maximum number of nodes in a proof sketch.
+  # Typical range: 4–16.
+  max_sketch_depth: 8
+
+  # Scale applied to the partial (goal-reducing) reward.
+  # Typical range: 0.1–0.9.
+  partial_reward_scale: 0.5
+
+  # Absolute path to the Lean 4 project repository (used by LeanDojo).
+  repo_path: ""
+
+  # Lean project name for LeanDojo.
+  project_name: "mathlib4"
+
+# ---------------------------------------------------------------------------
+# logging
+# ---------------------------------------------------------------------------
+logging:
+  # Enable Weights & Biases logging.
+  use_wandb: false
+
+  # W&B project name (used when use_wandb is true).
+  wandb_project: "hieroflow"
+
+  # W&B run name. Leave empty to auto-generate.
+  wandb_run_name: ""
+
+  # Log level for Python logger (DEBUG/INFO/WARNING/ERROR).
+  log_level: "INFO"
+
+  # Log every N training steps.
+  log_every: 50
