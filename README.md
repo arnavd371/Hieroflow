@@ -558,15 +558,6 @@ All figures use a uniform style defined in `results/plot_style.py`:
 
 ---
 
-## Citation
-
-```bibtex
-@inproceedings{hieroflow2025,
-  title   = {HieroFlow: Hierarchical GFlowNet for Diverse Lean 4 Theorem Proving},
-  author  = {Arnav Dubey},
-  year    = {2025},
-}
-```
 
 ---
 
